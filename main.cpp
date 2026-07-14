@@ -3,6 +3,8 @@ Where the main game is located
 */
 #include "raylib.h"//includes the raylib library
 #include <iostream>
+#include "ObstacleManager.h"
+#include "CharacterController.h"
 
 int main()
 {
