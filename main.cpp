@@ -6,7 +6,7 @@ Where the main game is located
 
 int main()
 {
-    InitWindow(300, 600, "FlappyMon");
+    InitWindow(800, 450, "FlappyMon");
     SetTargetFPS(60);
     while(WindowShouldClose() == false){
         BeginDrawing();
