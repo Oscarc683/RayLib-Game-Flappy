@@ -43,7 +43,7 @@ std::vector< Obstacle > ObstacleManager::getObstacles() {
 Obstacle ObstacleManager::createObstacle(int position, float height) {
     Obstacle o;
     if(height < 0)
-        height = (random()%10) * 30;
+        height = ((rand()%10)+1) * 30;
     o.height = height;
     o.width = (float)mImage.width;
     o.location.x = mDefaultLocation.x;
