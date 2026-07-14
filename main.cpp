@@ -16,8 +16,6 @@ int main()
         ClearBackground(skyBlue);
         EndDrawing();
     }
-
-
 CloseWindow();
 }//end of main function
     
