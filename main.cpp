@@ -1,16 +1,17 @@
 /*
 Where the main game is located
 */
-#include "raylib.h" //raylib library
+#include "raylib.h"//includes the raylib library
 #include <iostream>
 
 int main()
 {
-    InitWindow(800, 450, "FlappyMon");
-    SetTargetFPS(60);
-    while(WindowShouldClose() == false){
+    Color skyBlue = {135, 206, 250, 255};
+    InitWindow(300, 600, "FlappyMon");//Initializes a window canvas that the game's graphics
+    SetTargetFPS(60);//Sets the game to run at 60fps
+    while(WindowShouldClose() == false){//checks 
         BeginDrawing();
-        
+        ClearBackground(skyBlue);
         EndDrawing();
     }
 
