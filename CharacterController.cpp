@@ -49,6 +49,7 @@ Vector2 CharacterController::drawCharacter() {
     }
     Rectangle currentRectangle = (Rectangle){mCharacter.location.x, mCharacter.location.y, mCharacter.rectangle.width, mCharacter.rectangle.height};
     DrawTexturePro(currentTexture, mCharacter.rectangle, currentRectangle, Vector2{0, 0}, 0, RAYWHITE);
+    return mCharacter.location;
 }
 
 Vector2 CharacterController::inputHandler() {
@@ -61,6 +62,7 @@ Vector2 CharacterController::inputHandler() {
             gravitationModifier();
     }
 //    std::cout << mCharacter.state << std::endl;
+return mCharacter.location;
 }
 
 void CharacterController::onUpdate() {
