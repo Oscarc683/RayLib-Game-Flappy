@@ -1,7 +1,7 @@
 /*
 Where the main game is located
 */
-#include "raylib.h"
+#include "raylib.h" //raylib library
 #include <iostream>
 
 int main()
@@ -14,5 +14,8 @@ int main()
         EndDrawing();
     }
 
+
+    return 0;
+}//end of main function
     CloseWindow();
-}
+}//
