@@ -1,12 +1,21 @@
 /*
 Where the main game is located
 */
-
+#include "raylib.h" //raylib library
 #include <iostream>
 
-int main(){
-int thisAVar;
+int main()
+{
+    InitWindow(300, 600, "FlappyMon");
+    SetTargetFPS(60);
+    while(WindowShouldClose() == false){
+        BeginDrawing();
+        
+        EndDrawing();
+    }
 
 
     return 0;
-}// hi zaria is here
+}//end of main function
+    CloseWindow();
+}//
