@@ -15,7 +15,7 @@ int main()
     }
 
 
-    return 0;
+CloseWindow();
 }//end of main function
-    CloseWindow();
-}//
+    
+
