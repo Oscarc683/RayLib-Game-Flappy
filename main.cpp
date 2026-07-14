@@ -15,5 +15,8 @@ int main()
         EndDrawing();
     }
 
-    CloseWindow();
-}
+
+CloseWindow();
+}//end of main function
+    
+
