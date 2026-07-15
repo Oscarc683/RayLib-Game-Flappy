@@ -16,7 +16,8 @@ int main()
     Texture2D backgroundTexture = LoadTextureFromImage(backgroundImage);
     UnloadImage(backgroundImage);
 
-    Image obstacleImage = LoadImage("assets/sprites/pipe-green.png");
+    Image obstacleImage = LoadImage("assets/sprites/executor.png");
+    ImageResize(&obstacleImage, (int)(obstacleImage.width * 0.2), (int)(obstacleImage.height * 0.2));
 
     Image baseImage = LoadImage("assets/sprites/base.png");
     Texture2D baseTexture = LoadTextureFromImage(baseImage);
