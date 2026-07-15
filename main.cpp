@@ -28,6 +28,7 @@ int main()
     Texture2D executor = LoadTexture("assets/sprites/executor.png");
     // Load your background texture
     Texture2D background = LoadTexture("assets/sprites/background-day.png");
+    Texture2D backgroundNight = LoadTexture("assets/sprites/menu.png");
     // Source rectangle defines the full dimensions of your original image file
     Rectangle sourceRec = {0.0f, 0.0f, (float)background.width, (float)background.height};
     // Destination rectangle stretches the image to fit your window size
