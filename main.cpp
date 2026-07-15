@@ -50,10 +50,9 @@ int main()
 
     float currentBackgroundPosition = 0;
     float currentBasePosition = 0;
-    Vector2 characterPosition = Vector2{60, (float)screenHeight / 2};
+    // Vector2 characterPosition = Vector2{60, (float)screenHeight / 2};
     ObstacleManager obstacleManager(obstacleImage, speed, (Vector2){(float)screenWidth, (float)(screenHeight - baseTexture.height)}, 500);
-    while (WindowShouldClose() == false)
-    { // checks if user presses esc
+    while (WindowShouldClose() == false) { // checks if user presses esc
         BeginDrawing();
         ClearBackground(RAYWHITE);
 
