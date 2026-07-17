@@ -1,13 +1,17 @@
 /*
-Where the main game is located
+ I wrote the main game implementation in this file.
+ It uses RayLib for windowing, texture rendering, input handling,
+ and simple 2D game logic.
 */
-#include "raylib.h" //includes the raylib library
-#include <iostream>
-#include <random>
-#include <math.h>
+#include "raylib.h" // I use raylib for graphics and input.
+#include <iostream> // I keep this include for possible debug output.
+#include <random> // I use C++ random utilities for enemy and obstacle placement.
+#include <math.h> // I use math functions for projectile direction and rotation.
 
+// I declare the random integer helper before I use it in main.
 int getRand(int min, int max);
 
+// I define the projectile structure to store each ember shot.
 struct Projectile {
     float x;
     float y;
@@ -17,6 +21,7 @@ struct Projectile {
     bool active;
 };
 
+// I define the enemy structure for the Bulbasaur target.
 struct Enemy {
     float x;
     float y;
@@ -27,10 +32,11 @@ const int MAX_PROJECTILES = 10;
 Projectile projectiles[MAX_PROJECTILES] = {0};
 Enemy bulbasaur = {0};
 int bulbasaurSpawnCounter = 0;
-const int BULBASAUR_SPAWN_RATE = 120;  // Spawn every 120 frames (2 seconds at 60 FPS)
+const int BULBASAUR_SPAWN_RATE = 120;  // I spawn Bulbasaur every 120 frames at 60 FPS.
 
 int main()
 {
+    // I configure the game window and initial player state.
     int screenWidth = 850;
     int screenHeight = 910;
     int charbirdX = 100;
@@ -40,26 +46,26 @@ int main()
     bool start = false;
     bool inMenu = true;
     bool gameOver = false;
-    // Start button rectangle
+    // I use these booleans to track the menu state, active gameplay, and game over screen.
+    // I create clickable button rectangles for menu interactions.
     Rectangle startButton = {(float)(screenWidth / 2 - 180), (float)(screenHeight - 150), 140.0f, 60.0f};
-    // Exit button rectangle
     Rectangle exitButton = {(float)(screenWidth / 2 + 40), (float)(screenHeight - 150), 140.0f, 60.0f};
-    // Play again button rectangle
     Rectangle playAgainButton = {(float)(screenWidth / 2 - 100), (float)(screenHeight - 180), 200.0f, 70.0f};
     int pipeX = screenWidth;
     int pipeY = screenHeight - getRand(300, 800);
     bool embLoaded = false;
     Texture2D ember = {0};
 
-    InitWindow(screenWidth, screenHeight, "FlappyMon"); // Initializes a window canvas that the game's graphics
-    SetTargetFPS(60);
+    InitWindow(screenWidth, screenHeight, "FlappyMon"); // I initialize the game window.
+    SetTargetFPS(60); // I cap the game at 60 frames per second.
     Texture2D charmander = LoadTexture("assets/sprites/charmander.png");
     Texture2D executor = LoadTexture("assets/sprites/executor.png");
     Texture2D background = LoadTexture("assets/sprites/background-day.png");
     Texture2D menu = LoadTexture("assets/sprites/menu.png");
     Texture2D gameover = LoadTexture("assets/sprites/gameover.png");
     Texture2D bulbasaurTex = LoadTexture("assets/sprites/bulbasaur.png");
-    // Load number textures for score display
+    // I load the main sprite assets used by the player, obstacles, menu, and enemies.
+    // I load number textures so I can draw the score using sprite digits.
     Texture2D numbers[10];
     for (int i = 0; i < 10; i++)
     {
@@ -67,7 +73,7 @@ int main()
         snprintf(filename, sizeof(filename), "assets/sprites/%d.png", i);
         numbers[i] = LoadTexture(filename);
     }
-    // Menu background
+    // I prepare rectangles for drawing the menu background at full screen.
     Rectangle menuSourceRec = {0.0f, 0.0f, (float)menu.width, (float)menu.height};
     Rectangle menuDestRec = {0.0f, 0.0f, (float)screenWidth, (float)screenHeight};
     Vector2 menuOrigin = {0.0f, 0.0f};
@@ -93,12 +99,12 @@ int main()
     Vector2 embOrigin = {0.0f, 0.0f};
 
     while (!WindowShouldClose())
-    { // checks if user presses esc
+    { // I keep running the game loop until the window is closed.
         Vector2 mousePos = GetMousePosition();
         
         if (inMenu)
         {
-            // Menu input handling
+            // I handle menu input and check for button clicks.
             if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
             {
                 if (CheckCollisionPointRec(mousePos, startButton))
@@ -106,7 +112,7 @@ int main()
                     inMenu = false;
                     gameOver = false;
                     start = true;
-                    // Reset game state
+                    // Reset game state when the player starts a new game.
                     charbirdX = 100;
                     charbirdY = 400;
                     accel = 0;
@@ -129,7 +135,7 @@ int main()
                 }
                 else if (CheckCollisionPointRec(mousePos, exitButton))
                 {
-                    // Exit the game
+                    // I close the window and exit the game when the user clicks Exit.
                     CloseWindow();
                     return 0;
                 }
@@ -137,12 +143,12 @@ int main()
         }
         else if (gameOver)
         {
-            // Game over input handling
+            // I handle the game over screen and let the player return to the menu.
             if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
             {
                 if (CheckCollisionPointRec(mousePos, playAgainButton))
                 {
-                    // Reset to menu
+                    // I reset the state back to the menu for a new run.
                     inMenu = true;
                     gameOver = false;
                     start = false;
@@ -151,10 +157,10 @@ int main()
         }
         else
         {
-            // Game input and logic
+            // I process gameplay inputs and update the world while the game is running.
             if (start)
             {
-                // 1.Event Checker
+                // 1. Event Checker: jump when the player presses SPACE.
                 if (IsKeyPressed(KEY_SPACE))
                 {
                     accel = 0;
@@ -162,6 +168,7 @@ int main()
                 }
                 else
                 {
+                    // I apply gravity by increasing the downward acceleration.
                     charbirdY += 1 + accel;
                     accel += 0.3;
                 }
@@ -175,7 +182,7 @@ int main()
                         embOrigin = {(float)ember.width / 2.0f, (float)ember.height / 2.0f};
                         embLoaded = true;
                     }
-                    // Find first inactive projectile slot
+                    // I fire a projectile from Charmander toward the mouse cursor.
                     for (int i = 0; i < MAX_PROJECTILES; i++)
                     {
                         if (!projectiles[i].active)
@@ -192,11 +199,12 @@ int main()
                                 projectiles[i].angle = atan2f(dy, dx) * RAD2DEG;
                                 projectiles[i].active = true;
                             }
-                            break;  // Only add one projectile per click
+                            break;  // I only spawn one projectile per click.
                         }
                     }
                 }
-                // 2.Update Positions
+                // 2. Update Positions
+                // I keep Charmander on screen by clamping its vertical position.
                 if (charbirdY <= 0 + charmander.height - 150)
                 {
                     charbirdY = 0 + charmander.height - 150;
@@ -205,6 +213,7 @@ int main()
                 {
                     charbirdY = screenHeight - charmander.height + 200;
                 }
+                // I scroll the executor pipe left and reset it once it passes the left edge.
                 pipeX -= 8;
                 if (charbirdX - 750 > pipeX)
                 {
@@ -223,14 +232,14 @@ int main()
                 }
                 if (bulbasaur.active)
                 {
-                    bulbasaur.x -= 5;  // Move left
+                    bulbasaur.x -= 5;  // Move Bulbasaur left across the screen.
                     if (bulbasaur.x < 0)
                     {
                         bulbasaur.active = false;
-                        score += 10;  // Increase score when bulbasaur passes
+                        score += 10;  // I reward the player when Bulbasaur safely passes.
                     }
                     
-                    // Check collision with projectiles
+                    // I create a collision box for Bulbasaur and test each projectile.
                     Rectangle bulbasaurRec = {bulbasaur.x + (float)bulbasaurTex.width * 0.2f, 
                                               bulbasaur.y + (float)bulbasaurTex.height * 0.15f, 
                                               (float)bulbasaurTex.width * 0.1f, 
@@ -244,7 +253,7 @@ int main()
                             {
                                 bulbasaur.active = false;
                                 projectiles[i].active = false;
-                                score += 1;  // Add 1 point for hitting bulbasaur
+                                score += 1;  // I add a point when the player hits Bulbasaur.
                             }
                         }       
                     }
@@ -266,7 +275,7 @@ int main()
                     }
                 }
 
-                // Collision detection between charmander and executor pipe
+                // I detect collisions between Charmander and the executor pipe.
                 Rectangle charCollisionRec = {(float)charbirdX - (float)charmander.width * 0.08f, 
                                               (float)charbirdY - (float)charmander.height * 0.06f, 
                                               (float)charmander.width * 0.16f, 
@@ -283,13 +292,13 @@ int main()
             }
         }
 
-        // 3.Draw
+        // 3. Draw: I render the current game screen state each frame.
         BeginDrawing();
         ClearBackground(WHITE);
         
         if (inMenu && !gameOver)
         {
-            // Draw menu screen
+            // I draw the main menu and interactive buttons.
             DrawTexturePro(background, sourceRec, destRec, origin, 0.0f, WHITE);
             
             // Draw start button - red/orange with white border
@@ -333,12 +342,13 @@ int main()
             // Draw bulbasaur
             if (bulbasaur.active)
             {
+                // I draw Bulbasaur whenever it is active in the game world.
                 Rectangle bulbasaurSourceRec = {0.0f, 0.0f, (float)bulbasaurTex.width, (float)bulbasaurTex.height};
                 Rectangle bulbasaurDestRec = {bulbasaur.x, bulbasaur.y, (float)bulbasaurTex.width * 0.5f, (float)bulbasaurTex.height * 0.5f};
                 DrawTexturePro(bulbasaurTex, bulbasaurSourceRec, bulbasaurDestRec, {0.0f, 0.0f}, 0.0f, WHITE);
             }
             
-            // Draw score in top left using number sprites
+            // I draw the numeric score in the top-left corner using sprite textures.
             int tempScore = score;
             int scoreDigits[10];
             int digitCount = 0;
@@ -365,6 +375,7 @@ int main()
         }
         EndDrawing();
     }
+    // I unload textures to free GPU memory when the game ends.
     UnloadTexture(executor);
     UnloadTexture(charmander);
     UnloadTexture(background);
